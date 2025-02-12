@@ -1,0 +1,2 @@
+Double Epsilon: 2.22044604925031E-16
+Float Epsilon: 1.192093E-07

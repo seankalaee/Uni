@@ -1,0 +1,3 @@
+a == b ? False
+a > 1 ? False
+b > 1 ? True
