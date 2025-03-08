@@ -1,0 +1,12 @@
+Total Harmonic Sum (Threading): 18.9978964138526
+Total Harmonic Sum (Parallel.For Wrong - Fixed with Lock): 18.9978964138509
+Total Harmonic Sum (Parallel.For Correct): 18.9978964138537
+Total Harmonic Sum (Threading): 18.997896413853
+Total Harmonic Sum (Parallel.For Wrong - Fixed with Lock): 18.9978964138511
+Total Harmonic Sum (Parallel.For Correct): 18.9978964138542
+Total Harmonic Sum (Threading): 18.9978964138495
+Total Harmonic Sum (Parallel.For Wrong - Fixed with Lock): 18.9978964138505
+Total Harmonic Sum (Parallel.For Correct): 18.9978964138553
+Total Harmonic Sum (Threading): 18.9978964138499
+Total Harmonic Sum (Parallel.For Wrong - Fixed with Lock): 18.9978964138511
+Total Harmonic Sum (Parallel.For Correct): 18.997896413853
