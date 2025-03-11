@@ -1,97 +1,72 @@
 using System;
 
-public class Jacobi
+public static class jacobi
 {
-    public static void TimesJ(double[,] A, int p, int q, double theta)
+    // Multiplies matrix A by Jacobi rotation matrix J(p, q, theta) from the right: A ← A * J
+    public static void timesJ(matrix A, int p, int q, double theta)
     {
-        double c = Math.Cos(theta);
-        double s = Math.Sin(theta);
-        int n = A.GetLength(0);
-
-        for (int i = 0; i < n; i++)
+        double c = Math.Cos(theta), s = Math.Sin(theta);
+        for (int i = 0; i < A.size1; i++)
         {
-            double aip = A[i, p];
-            double aiq = A[i, q];
+            double aip = A[i, p], aiq = A[i, q];
             A[i, p] = c * aip - s * aiq;
             A[i, q] = s * aip + c * aiq;
         }
     }
 
-    public static void JTimes(double[,] A, int p, int q, double theta)
+    // Multiplies matrix A by Jacobi rotation matrix J(p, q, theta) from the left: A ← J^T * A
+    public static void Jtimes(matrix A, int p, int q, double theta)
     {
-        double c = Math.Cos(theta);
-        double s = Math.Sin(theta);
-        int n = A.GetLength(0);
-
-        for (int j = 0; j < n; j++)
+        double c = Math.Cos(theta), s = Math.Sin(theta);
+        for (int j = 0; j < A.size2; j++)
         {
-            double apj = A[p, j];
-            double aqj = A[q, j];
-            A[p, j] = c * apj - s * aqj;
-            A[q, j] = s * apj + c * aqj;
+            double apj = A[p, j], aqj = A[q, j];
+            A[p, j] = c * apj + s * aqj;
+            A[q, j] = -s * apj + c * aqj;
         }
     }
 
-    public static void Cyclic(double[,] A, double[] w, double[,] V)
+    // Jacobi Eigenvalue Algorithm with cyclic sweeps
+    public static (vector, matrix) cyclic(matrix M)
     {
-        int n = A.GetLength(0);
-        int maxIterations = 1000; // Prevent infinite loop
-        double tolerance = 1e-9;  // Stop when changes are minimal
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-                V[i, j] = (i == j) ? 1.0 : 0.0;
-        }
-
+        int n = M.size1;
+        matrix A = M.copy();    // Copy input matrix to avoid modifying it
+        matrix V = matrix.id(n); // Identity matrix to store eigenvectors
+        vector w = new vector(n); // Vector to store eigenvalues
         bool changed;
-        int iterations = 0;
 
+        // Perform cyclic sweeps until no significant changes occur
         do
         {
             changed = false;
-            iterations++;
-
             for (int p = 0; p < n - 1; p++)
             {
                 for (int q = p + 1; q < n; q++)
                 {
                     double apq = A[p, q], app = A[p, p], aqq = A[q, q];
-                    double theta = 0.5 * Math.Atan2(2 * apq, aqq - app);
+                    double theta = 0.5 * Math.Atan2(2 * apq, aqq - app); // Compute rotation angle
                     double c = Math.Cos(theta), s = Math.Sin(theta);
+
+                    // Compute new diagonal elements after rotation
                     double new_app = c * c * app - 2 * s * c * apq + s * s * aqq;
                     double new_aqq = s * s * app + 2 * s * c * apq + c * c * aqq;
 
-                    // Only apply rotation if values change significantly
-                    if (Math.Abs(new_app - app) > tolerance || Math.Abs(new_aqq - aqq) > tolerance)
+                    // If diagonal elements changed, perform rotation
+                    if (new_app != app || new_aqq != aqq)
                     {
                         changed = true;
-                        TimesJ(A, p, q, theta);
-                        JTimes(A, p, q, -theta);
-                        TimesJ(V, p, q, theta);
+                        timesJ(A, p, q, theta); // A ← A * J
+                        Jtimes(A, p, q, -theta); // A ← J^T * A
+                        timesJ(V, p, q, theta); // V ← V * J (update eigenvectors)
                     }
                 }
             }
+        } while (changed);
 
-            Console.WriteLine($"Iteration {iterations}: Max off-diagonal value = {FindMaxOffDiagonal(A)}");
-
-        } while (changed && iterations < maxIterations);
-
-        if (iterations >= maxIterations)
-            Console.WriteLine("Warning: Jacobi did not fully converge.");
-
+        // Copy diagonal elements into eigenvalue vector
         for (int i = 0; i < n; i++)
-            w[i] = A[i, i]; // Extract eigenvalues
-    }
+            w[i] = A[i, i];
 
-    private static double FindMaxOffDiagonal(double[,] A)
-    {
-        int n = A.GetLength(0);
-        double maxVal = 0.0;
-        for (int i = 0; i < n; i++)
-            for (int j = i + 1; j < n; j++)
-                maxVal = Math.Max(maxVal, Math.Abs(A[i, j]));
-
-        return maxVal;
+        return (w, V);
     }
 }

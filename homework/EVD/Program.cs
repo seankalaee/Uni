@@ -1,65 +1,56 @@
 using System;
-using System.IO;
 
-class Program
+class MainClass
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        double rmax = 10.0;
-        double dr = 0.3;
+        int n = 4; // Size of the matrix
+        Random rand = new Random();
+        matrix A = new matrix(n, n);
 
-        if (args.Length == 2)
+        // Generate a random symmetric matrix
+        for (int i = 0; i < n; i++)
         {
-            rmax = double.Parse(args[0]);
-            dr = double.Parse(args[1]);
-        }
-
-        int npoints = (int)(rmax / dr) - 1;
-        double[,] H = Hamiltonian.BuildHamiltonian(npoints, rmax, dr);
-        double[] eigenvalues = new double[npoints];
-        double[,] eigenvectors = new double[npoints, npoints];
-
-        Jacobi.Cyclic(H, eigenvalues, eigenvectors);
-        NormalizeEigenvectors(eigenvectors, dr);
-
-        // Save wavefunction to file
-        SaveWavefunction("wavefunction.txt", eigenvectors, npoints, dr);
-
-        // Output results
-        string output = "Eigenvalues:\n";
-        for (int i = 0; i < 5; i++)  
-            output += eigenvalues[i] + "\n";
-
-        Console.WriteLine(output);
-        File.WriteAllText("output.txt", output);
-    }
-
-    static void NormalizeEigenvectors(double[,] V, double dr)
-    {
-        int n = V.GetLength(0);
-
-        for (int k = 0; k < n; k++)
-        {
-            double norm = 0;
-            for (int i = 0; i < n; i++)
-                norm += V[i, k] * V[i, k] * dr;
-
-            norm = Math.Sqrt(norm);
-
-            for (int i = 0; i < n; i++)
-                V[i, k] /= norm;
-        }
-    }
-
-    static void SaveWavefunction(string filename, double[,] V, int npoints, double dr)
-    {
-        using (StreamWriter writer = new StreamWriter(filename))
-        {
-            for (int i = 0; i < npoints; i++)
+            for (int j = i; j < n; j++)
             {
-                double r = dr * (i + 1);
-                writer.WriteLine($"{r} {V[i, 0]}");
+                double value = rand.NextDouble(); // Random value
+                A[i, j] = value;
+                A[j, i] = value; // Ensure symmetry
             }
         }
+
+        Console.WriteLine("Original Matrix A:");
+        A.print();
+
+        (vector w, matrix V) = jacobi.cyclic(A);
+
+        Console.WriteLine("\nEigenvalues:");
+        w.print();
+
+        Console.WriteLine("\nEigenvectors Matrix V:");
+        V.print();
+
+        matrix D = new matrix(n, n);
+        for (int i = 0; i < n; i++)
+            D[i, i] = w[i];
+
+        // Compute the checks
+        matrix VT = V.transpose();
+        matrix VTAV = VT * A * V;
+        matrix VDVt = V * D * VT;
+        matrix VTV = VT * V;
+        matrix VVT = V * VT;
+
+        Console.WriteLine("\nCheck V^T A V == D:");
+        VTAV.print();
+
+        Console.WriteLine("\nCheck V D V^T == A:");
+        VDVt.print();
+
+        Console.WriteLine("\nCheck V^T V == I (Identity):");
+        VTV.print();
+
+        Console.WriteLine("\nCheck V V^T == I (Identity):");
+        VVT.print();
     }
 }
