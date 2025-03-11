@@ -35,16 +35,16 @@ public class QR {
         return product;
     }
 
-    // Part B, Computes matrix inverse using QR decomposition
+    // Computes matrix inverse using QR decomposition
     public matrix inverse() {
         int n = Q.size1;
-        matrix I = matrix.id(n);  // Identity matrix
+        matrix I = matrix.id(n);
         matrix B = new matrix(n, n);
 
         for (int i = 0; i < n; i++) {
-            vector e = I[i];  // Extract i-th column of identity
-            vector x_sol = backsub(R, Q % e);  // Solve Rx = Q^T e
-            B[i] = x_sol;  // Store in inverse matrix
+            vector e = I[i];
+            vector x_sol = backsub(R, Q % e);
+            B[i] = x_sol;
         }
         return B;
     }
@@ -59,5 +59,27 @@ public class QR {
             x[i] = (c[i] - sum) / U[i, i];
         }
         return x;
+    }
+
+    // Function to check if R is upper triangular
+    public bool isUpperTriangular() {
+        for (int i = 1; i < R.size1; i++) {
+            for (int j = 0; j < i; j++) {
+                if (Abs(R[i, j]) > 1e-10) return false;
+            }
+        }
+        return true;
+    }
+
+    // Function to verify that Q^T Q ≈ I
+    public bool isOrthogonal() {
+        matrix QTQ = Q.transpose() * Q;
+        return QTQ.approx(matrix.id(QTQ.size1));
+    }
+
+    // Function to check if QR ≈ A
+    public bool isQRDecompositionCorrect(matrix A) {
+        matrix QR_prod = Q * R;
+        return QR_prod.approx(A);
     }
 }
