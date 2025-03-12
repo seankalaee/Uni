@@ -1,10 +1,10 @@
 using System;
 
-class MainClass
+class EigenTest
 {
     static void Main()
     {
-        int n = 4; // Size of the matrix
+        int n = 4;
         Random rand = new Random();
         matrix A = new matrix(n, n);
 
@@ -13,44 +13,32 @@ class MainClass
         {
             for (int j = i; j < n; j++)
             {
-                double value = rand.NextDouble(); // Random value
+                double value = rand.NextDouble();
                 A[i, j] = value;
-                A[j, i] = value; // Ensure symmetry
+                A[j, i] = value;
             }
         }
 
-        Console.WriteLine("Original Matrix A:");
-        A.print();
-
+        Console.WriteLine("\nTesting Eigenvalue Decomposition:");
         (vector w, matrix V) = jacobi.cyclic(A);
-
-        Console.WriteLine("\nEigenvalues:");
-        w.print();
-
-        Console.WriteLine("\nEigenvectors Matrix V:");
-        V.print();
 
         matrix D = new matrix(n, n);
         for (int i = 0; i < n; i++)
             D[i, i] = w[i];
 
-        // Compute the checks
         matrix VT = V.transpose();
         matrix VTAV = VT * A * V;
         matrix VDVt = V * D * VT;
         matrix VTV = VT * V;
         matrix VVT = V * VT;
 
-        Console.WriteLine("\nCheck V^T A V == D:");
+        Console.WriteLine("Check V^T A V == D:");
         VTAV.print();
-
-        Console.WriteLine("\nCheck V D V^T == A:");
+        Console.WriteLine("Check V D V^T == A:");
         VDVt.print();
-
-        Console.WriteLine("\nCheck V^T V == I (Identity):");
+        Console.WriteLine("Check V^T V == I:");
         VTV.print();
-
-        Console.WriteLine("\nCheck V V^T == I (Identity):");
+        Console.WriteLine("Check V V^T == I:");
         VVT.print();
     }
 }
