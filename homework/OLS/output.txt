@@ -1,0 +1,6 @@
+ln(a) = 4.9577 ± 0.0224
+Lambda (decay constant) = 0.1703 ± 0.0048
+Half-life T_1/2 = 4.0706 ± 0.1140 days, modern value is approx. 3.6 days. So not within range
+
+The uncertainty of the logarithm is δln(y) = δy / y (proved).
+
