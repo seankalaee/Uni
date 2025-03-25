@@ -1,0 +1,7 @@
+Running test: circular orbit (ε=0)
+  → Output saved to: relativity_circular.txt
+Running test: elliptical orbit (ε=0)
+  → Output saved to: relativity_elliptical.txt
+Running test: precessing orbit (ε=0.01)
+  → Output saved to: relativity_precessing.txt
+All orbits complete.
