@@ -1,0 +1,6 @@
+Integral Result | Expected | Error | Status
+∫₀¹ sqrt(x) dx                      0.66666668      0.66666667   1.29E-08 PASSED
+∫₀¹ 1/sqrt(x) dx                    2.00000000      2.00000000   7.70E-10 PASSED
+∫₀¹ sqrt(1 − x²) dx                 0.78539817      0.78539816   7.12E-09 PASSED
+∫₀¹ ln(x)/sqrt(x) dx               -4.00000000     -4.00000000   4.37E-10 PASSED
+erf(1)                             0.84270079      0.84270079   1.25E-09 PASSED

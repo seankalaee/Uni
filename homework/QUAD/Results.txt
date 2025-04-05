@@ -1,0 +1,18 @@
+Testing known integrals:
+
+∫₀¹ sqrt(x) dx: 0.666666679595362 (expected 0.666666666666667), error = 1.29286956696006E-08, evals = 556
+∫₀¹ 1/sqrt(x) dx: 1.99999999923004 (expected 2), error = 7.6995698705673E-10, evals = 264868
+∫₀¹ sqrt(1 − x²) dx: 0.785398170518048 (expected 0.785398163397448), error = 7.12060022056704E-09, evals = 772
+∫₀¹ ln(x)/sqrt(x) dx: -3.99999999956271 (expected -4), error = 4.37292868582517E-10, evals = 2629524
+
+Computed erf(1) with acc=1E-06: 0.842700794199361
+Expected:                       0.842700792949715
+
+Clenshaw–Curtis Comparison (eval counts):
+∫₀¹ 1/√x dx
+Standard result:        1.99999999923004, evaluations: 264868
+Clenshaw–Curtis result: 1.99999999995955, evaluations: 788
+
+∫₀¹ ln(x)/√x dx
+Standard result:        -3.99999999956271, evaluations: 2629524
+Clenshaw–Curtis result: -3.99999878096792, evaluations: 4324
