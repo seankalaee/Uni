@@ -1,0 +1,7 @@
+Singular Integral Estimation
+N = 1000000000
+Estimated Result : 1.39140877395428
+Estimated Error  : 0.000479654857897631
+Actual Error     : 0.00179515573139732
+Exact Value      : 1.39320392968568
+Elapsed Time     : 141.85 seconds
