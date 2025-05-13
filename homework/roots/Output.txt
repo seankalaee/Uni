@@ -1,0 +1,28 @@
+Rosenbrock gradient root:
+‖f(x)‖ = 0.00818587524832094
+
+Himmelblau gradient root:
+‖f(x)‖ = 0.00847336968575478
+
+Hydrogen atom ground state:
+Computed E₀ = -0.499974870681763
+Exact E₀ = -0.5
+Error = 2.5129318237338E-05
+
+Convergence study:
+rmin=0.1 rmax=4 acc=0.1 eps=0.1 => E=-0.485027456283569 err=0.0149725437164306
+rmin=0.1 rmax=4 acc=0.1 eps=0.01 => E=-0.485027456283569 err=0.0149725437164306
+rmin=0.1 rmax=4 acc=0.01 eps=0.1 => E=-0.484960508346558 err=0.0150394916534424
+rmin=0.1 rmax=4 acc=0.01 eps=0.01 => E=-0.485230875015259 err=0.0147691249847412
+rmin=0.1 rmax=8 acc=0.1 eps=0.1 => E=-0.501779890060425 err=0.00177989006042489
+rmin=0.1 rmax=8 acc=0.1 eps=0.01 => E=-0.501779890060425 err=0.00177989006042489
+rmin=0.1 rmax=8 acc=0.01 eps=0.1 => E=-0.501615953445435 err=0.00161595344543453
+rmin=0.1 rmax=8 acc=0.01 eps=0.01 => E=-0.501800489425659 err=0.00180048942565914
+rmin=0.5 rmax=4 acc=0.1 eps=0.1 => E=-0.861925458908081 err=0.361925458908081
+rmin=0.5 rmax=4 acc=0.1 eps=0.01 => E=-0.861925458908081 err=0.361925458908081
+rmin=0.5 rmax=4 acc=0.01 eps=0.1 => E=-0.858017587661743 err=0.358017587661743
+rmin=0.5 rmax=4 acc=0.01 eps=0.01 => E=-0.857754945755005 err=0.357754945755005
+rmin=0.5 rmax=8 acc=0.1 eps=0.1 => Root not bracketed
+rmin=0.5 rmax=8 acc=0.1 eps=0.01 => Root not bracketed
+rmin=0.5 rmax=8 acc=0.01 eps=0.1 => Root not bracketed
+rmin=0.5 rmax=8 acc=0.01 eps=0.01 => Root not bracketed

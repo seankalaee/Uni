@@ -1,7 +1,7 @@
 using System;
 using static System.Math;
 
-public static class newton_solver {
+public static class Newton {
     public static vector newton(
         Func<vector, vector> f,
         vector start,

@@ -1,93 +1,95 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static System.Math;
 
-public class MainProgram {
-    public static void Main() {
-        // ===============================
-        // Part 1: Root-Finding (Newton)
-        // ===============================
-        StreamWriter output = new StreamWriter("RosenbrockHimmelblau.txt", false);
+class main {
+    static void Main() {
+        using (var output = new StreamWriter("Output.txt")) {
 
-        Func<vector, vector> rosenbrockGradient = v => {
-            double x = v[0], y = v[1];
-            return new vector(
-                -2 * (1 - x) - 400 * x * (y - x * x),
-                200 * (y - x * x)
-            );
-        };
-
-        Func<vector, vector> himmelblauGradient = v => {
-            double x = v[0], y = v[1];
-            return new vector(
-                4 * x * (x * x + y - 11) + 2 * (x + y * y - 7),
-                2 * (x * x + y - 11) + 4 * y * (x + y * y - 7)
-            );
-        };
-
-        vector rosen_start = new vector(-1.0, 1.0);
-        vector himmel_start = new vector(4.0, 0.0);
-
-        output.WriteLine("Finding minimum of Rosenbrock function:");
-        vector rosen_result = newton_solver.newton(rosenbrockGradient, rosen_start, 1e-6);
-        output.WriteLine($"Found minimum at: ({rosen_result[0]}, {rosen_result[1]})\n");
-
-        output.WriteLine("Finding minimum of Himmelblau function:");
-        vector himmel_result = newton_solver.newton(himmelblauGradient, himmel_start, 1e-6);
-        output.WriteLine($"Found minimum at: ({himmel_result[0]}, {himmel_result[1]})");
-
-        output.Close();
-
-        // ===============================
-        // Part 2: Hydrogen Shooting
-        // ===============================
-        StreamWriter hydro_out = new StreamWriter("hydrogen_data.txt", false);
-        double r_min = 1e-3;
-        double r_max = 8.0;
-        double energy_guess_a = -0.8;
-        double energy_guess_b = -0.3;
-        double acc = 1e-4;
-
-        Func<double, double[], double[]> schrodinger(double E) {
-            return (r, y) => new double[] {
-                y[1],
-                -2 * ( -1 / r - E ) * y[0]
+            // --- Newton's method: Rosenbrock function ---
+            output.WriteLine("Rosenbrock gradient root:");
+            Func<vector, vector> rosenbrock_grad = v => {
+                double x = v[0], y = v[1];
+                return new vector(-2 * (1 - x) - 400 * x * (y - x * x),
+                                  200 * (y - x * x));
             };
-        }
+            vector start1 = new vector(0.5, 0.5);
+            vector result1 = Newton.newton(rosenbrock_grad, start1);
+            output.WriteLine($"‖f(x)‖ = {rosenbrock_grad(result1).norm()}");
+            output.WriteLine();
 
-        double shoot(double E) {
-            double[] y0 = { r_min - r_min * r_min, 1 - 2 * r_min }; // Initial conditions
-            var (xlist, ylist) = Driver.driver12(schrodinger(E), (r_min, r_max), y0, h: 0.05, acc: 1e-6, eps: 1e-6);
-            return ylist[ylist.Count - 1][0]; // return f_E(r_max)
-        }
+            // --- Newton's method: Himmelblau function ---
+            output.WriteLine("Himmelblau gradient root:");
+            Func<vector, vector> himmelblau_grad = v => {
+                double x = v[0], y = v[1];
+                return new vector(4 * x * (x * x + y - 11) + 2 * (x + y * y - 7),
+                                  2 * (x * x + y - 11) + 4 * y * (x + y * y - 7));
+            };
+            vector start2 = new vector(5.0, 5.0);
+            vector result2 = Newton.newton(himmelblau_grad, start2);
+            output.WriteLine($"‖f(x)‖ = {himmelblau_grad(result2).norm()}");
+            output.WriteLine();
 
-        double bisection(Func<double, double> f, double a, double b, double tol = 1e-6) {
-            double fa = f(a), fb = f(b);
-            if (fa * fb > 0) throw new Exception("Root not bracketed");
-            while (b - a > tol) {
-                double mid = (a + b) / 2;
-                double fmid = f(mid);
-                if (fa * fmid < 0) { b = mid; fb = fmid; }
-                else { a = mid; fa = fmid; }
+            // --- Hydrogen atom ground state energy ---
+            output.WriteLine("Hydrogen atom ground state:");
+            Func<double, double> M = Hydrogen.M;
+            double E0 = Bisection(M, -1.0, -0.1, 1e-6);
+            output.WriteLine($"Computed E₀ = {E0}");
+            output.WriteLine($"Exact E₀ = -0.5");
+            output.WriteLine($"Error = {Math.Abs(E0 + 0.5)}");
+
+            // --- Save wavefunctions to file ---
+            using (var wf = new StreamWriter("wavefunction.dat")) {
+                var result = Hydrogen.radial_solution(E0);
+                var rvals = result.Item1;
+                var fvals = result.Item2;
+                for (int i = 0; i < rvals.Count; i++) {
+                    double r = rvals[i];
+                    double f = fvals[i];
+                    double exact = Hydrogen.exact(r);
+                    wf.WriteLine($"{r} {f} {exact}");
+                }
             }
-            return (a + b) / 2;
+            output.WriteLine();
+
+            // --- Convergence study ---
+            output.WriteLine("Convergence study:");
+            double[] rmins = { 1e-1, 5e-1 };
+            double[] rmaxs = { 4, 8 };
+            double[] accs = { 1e-1, 1e-2 };
+            double[] epss = { 1e-1, 1e-2 };
+
+            foreach (double rmin in rmins)
+            foreach (double rmax in rmaxs)
+            foreach (double acc in accs)
+            foreach (double eps in epss) {
+                Hydrogen.rmin = rmin;
+                Hydrogen.rmax = rmax;
+                Hydrogen.acc = acc;
+                Hydrogen.eps = eps;
+
+                double fa = M(-1.0), fb = M(-0.1);
+                if (fa * fb > 0) {
+                    output.WriteLine($"rmin={rmin} rmax={rmax} acc={acc} eps={eps} => Root not bracketed");
+                    continue;
+                }
+
+                double E = Bisection(M, -1.0, -0.1, 1e-6);
+                double err = Math.Abs(E + 0.5);
+                output.WriteLine($"rmin={rmin} rmax={rmax} acc={acc} eps={eps} => E={E} err={err}");
+            }
         }
+    }
 
-        double E0 = bisection(shoot, energy_guess_a, energy_guess_b, acc);
-        Console.WriteLine($"Ground state energy found: E0 ≈ {E0}");
-
-        // Solve again to write f(r)
-        double[] y00 = { r_min - r_min * r_min, 1 - 2 * r_min };
-        var (R, Y) = Driver.driver12(schrodinger(E0), (r_min, r_max), y00, h: 0.05, acc: 1e-6, eps: 1e-6);
-
-        for (int i = 0; i < R.Count; i++) {
-            double r = R[i];
-            double f_num = Y[i][0];
-            double f_exact = r * Exp(-r);
-            hydro_out.WriteLine($"{r,10:F6} {f_num,15:E6} {f_exact,15:E6}");
+    public static double Bisection(Func<double, double> f, double a, double b, double tol) {
+        double fa = f(a), fb = f(b);
+        if (fa * fb > 0) throw new Exception("Root not bracketed");
+        while (b - a > tol) {
+            double c = (a + b) / 2;
+            double fc = f(c);
+            if (fa * fc < 0) { b = c; fb = fc; }
+            else             { a = c; fa = fc; }
         }
-
-        hydro_out.Close();
+        return (a + b) / 2;
     }
 }
