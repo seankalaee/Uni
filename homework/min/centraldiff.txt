@@ -1,0 +1,9 @@
+Rosenbrock:
+Final minimum: 0.999335375241248 0.998668432341835
+Expected minimum: 1 1
+Check: PASS
+
+Himmelblau:
+Final minimum: 3.00001058737569 1.99999534292255
+Expected minimum: 3 2
+Check: PASS

@@ -1,0 +1,4 @@
+Best fit parameters:
+m     = 125.9766
+Gamma = 1.5472
+A     = 7.5500
