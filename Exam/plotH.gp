@@ -1,27 +1,24 @@
-set terminal png size 1000,800
+set terminal pngcairo size 1000,800
 set output 'plotH.png'
-set title "Himmelblau Optimization (Contour Lines)"
+
+set title "Himmelblau Function Heatmap"
 set xlabel "x"
 set ylabel "y"
 set xrange [-5:5]
 set yrange [-5:5]
-unset key
-unset colorbox
-unset pm3d
-unset surface
-set view map
-set dgrid3d 100,100
-set contour base
-set cntrparam levels incremental 0,10,200
-unset clabel
-set style data lines
 
-set multiplot
-set origin 0,0
-set size 1,1
+# Heatmap configuration
+set pm3d map
+set palette defined (0 "navy", 50 "blue", 100 "green", 150 "yellow", 200 "red", 250 "white")
+set cbrange [0:200]
+set logscale cb
+set colorbox
+set size ratio -1
+set key top left
 
-splot 'himmelblau_surface.txt' using 1:2:3 notitle with lines lc rgb "black"
+# Label near final minimum
+set label "Minimum" at graph 0.72, 0.12 tc rgb "red"
 
-plot 'final_himmelblau.txt' using 1:2 with points pt 7 ps 2 lc rgb 'red' notitle
-
-unset multiplot
+splot 'himmelblau_surface.txt' using 1:2:3 with pm3d notitle, \
+      'best_himmelblau.txt' using 1:2:(0) with points pt 7 ps 3 lc rgb 'black' title "Initial guess", \
+      'final_himmelblau.txt' using 1:2:(0) with points pt 7 ps 3 lc rgb 'red' title "Minimum"

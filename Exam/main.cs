@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Diagnostics;
 
 class Program {
     static (vector, double) FindBestSample(Func<vector, double> f, vector a, vector b, int N) {
@@ -26,39 +27,42 @@ class Program {
         string traceFile = $"trace_{name}.txt";
         string finalFile = $"final_{name}.txt";
         string bestFile = $"best_{name}.txt";
-
+        
         vector minimum = newton.minimize(f, bestSample, traceFile);
-        Console.WriteLine($"Final result: f({minimum[0]:F6}, {minimum[1]:F6}) = {f(minimum):F6}");
+        double result = f(minimum);
+        Console.WriteLine($"Final result: f({minimum[0]:F6}, {minimum[1]:F6}) = {result:F6}");
 
-        File.WriteAllText(bestFile, $"{bestSample[0]} {bestSample[1]}\n");
-
-        if (name == "himmelblau") {
-            double result = f(minimum);
-            File.WriteAllText("final_himmelblau.txt",
-                $"{minimum[0]} {minimum[1]} {result}");
-        } else {
-            File.WriteAllText(finalFile, $"{minimum[0]} {minimum[1]}\n");
+        using (var writer = new StreamWriter(bestFile, false)) {
+            writer.WriteLine($"{bestSample[0]} {bestSample[1]}");
+            writer.Flush();
         }
 
-        if (name == "himmelblau") GenerateSurfaceFile(f, a, b, "himmelblau_surface.txt", 100);
+        using (var writer = new StreamWriter(finalFile, false)) {
+            writer.WriteLine($"{minimum[0]} {minimum[1]} {result}");
+            writer.Flush();
+        }
+
+        string surfaceFile = name == "himmelblau" ? "himmelblau_surface.txt" : "rosenbrock_surface.txt";
+        GenerateSurfaceFile(f, a, b, surfaceFile, 100);
     }
 
     static void GenerateSurfaceFile(Func<vector, double> f, vector a, vector b, string filename, int steps = 100) {
-        StreamWriter file = new StreamWriter(filename);
-        double x_min = a[0], x_max = b[0];
-        double y_min = a[1], y_max = b[1];
+        using (StreamWriter file = new StreamWriter(filename)) {
+            double x_min = a[0], x_max = b[0];
+            double y_min = a[1], y_max = b[1];
 
-        for (int i = 0; i <= steps; i++) {
-            double x = x_min + i * (x_max - x_min) / steps;
-            for (int j = 0; j <= steps; j++) {
-                double y = y_min + j * (y_max - y_min) / steps;
-                double z = f(new vector(x, y));
-                file.WriteLine($"{x} {y} {z}");
+            for (int i = 0; i <= steps; i++) {
+                double x = x_min + i * (x_max - x_min) / steps;
+                for (int j = 0; j <= steps; j++) {
+                    double y = y_min + j * (y_max - y_min) / steps;
+                    double z = f(new vector(x, y));
+                    file.WriteLine($"{x} {y} {z}");
+                }
+                file.WriteLine(); // blank line for gnuplot
             }
-            file.WriteLine(); // blank line for gnuplot
-        }
 
-        file.Close();
+            file.Flush();
+        }
     }
 
     static void Main() {
@@ -78,7 +82,11 @@ class Program {
         Console.WriteLine("\n✅ All tasks complete.");
         Console.WriteLine("Generating plots...");
 
-        System.Diagnostics.Process.Start("gnuplot", "plotH.gp");
-        System.Diagnostics.Process.Start("gnuplot", "plotR.gp");
+        var gnuplotH = new ProcessStartInfo("gnuplot", "plotH.gp");
+        var gnuplotR = new ProcessStartInfo("gnuplot", "plotR.gp");
+        gnuplotH.UseShellExecute = false;
+        gnuplotR.UseShellExecute = false;
+        Process.Start(gnuplotH);
+        Process.Start(gnuplotR);
     }
 }
