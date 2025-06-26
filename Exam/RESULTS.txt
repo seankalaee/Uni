@@ -1,24 +1,26 @@
+Sample counts: 10000
+
 --- Himmelblau ---
 f(x,y) = (x² + y − 11)² + (x + y² − 7)²
-Best sample: f(2.9926, 2.0150) = 0.003643
-Final result: f(3.000000, 2.000000) = 0.000000
+Best sample: f(2.9567, 2.0101) = 0.061400
+Final result: f(3.000001, 2.000000) = 0.000000
 Known minima: (3,2), (-2.805,3.131), (-3.779,-3.283), (3.584,-1.848)
 
 --- Rosenbrock ---
 f(x,y) = (1 − x)² + 100(y − x²)²
-Best sample: f(0.9666, 0.9474) = 0.018337
-Final result: f(0.999968, 0.999934) = 0.000000
+Best sample: f(1.0179, 1.0373) = 0.000473
+Final result: f(0.999967, 0.999933) = 0.000000
 Known minimum: (1, 1)
 
 --- Beale ---
 f(x,y) = (1.5 − x + x·y)² + (2.25 − x + x·y²)² + (2.625 − x + x·y³)²
-Best sample: f(3.0442, 0.5255) = 0.005719
-Final result: f(2.999997, 0.499999) = 0.000000
+Best sample: f(3.0503, 0.5209) = 0.002266
+Final result: f(2.999998, 0.499999) = 0.000000
 Known minimum: (3, 0.5)
 
 --- Booth ---
 f(x,y) = (x + 2y − 7)² + (2x + y − 5)²
-Best sample: f(1.2524, 2.6540) = 0.218480
+Best sample: f(1.0526, 2.9959) = 0.012196
 Final result: f(1.000000, 3.000000) = 0.000000
 Known minimum: (1, 3)
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 class Program {
     static StreamWriter resultsWriter;
+    static int sampleCount = 10000; // Number of samples used for global search
 
     static (vector, double) FindBestSample(Func<vector, double> f, vector a, vector b, int N) {
         double bestVal = double.PositiveInfinity;
@@ -26,7 +27,7 @@ class Program {
         resultsWriter.WriteLine($"--- {char.ToUpper(name[0]) + name.Substring(1)} ---");
         resultsWriter.WriteLine(formula);
 
-        (vector bestSample, double bestValue) = FindBestSample(f, a, b, 10000);
+        (vector bestSample, double bestValue) = FindBestSample(f, a, b, sampleCount);
         Console.WriteLine($"Best sample: f({bestSample[0]:F4}, {bestSample[1]:F4}) = {bestValue:F6}");
         resultsWriter.WriteLine($"Best sample: f({bestSample[0]:F4}, {bestSample[1]:F4}) = {bestValue:F6}");
 
@@ -73,6 +74,9 @@ class Program {
 
     static void Main() {
         resultsWriter = new StreamWriter("RESULTS.txt", false);
+
+        resultsWriter.WriteLine($"Sample counts: {sampleCount}");
+        resultsWriter.WriteLine();
 
         Func<vector, double> himmelblau = x => {
             double x1 = x[0], x2 = x[1];
