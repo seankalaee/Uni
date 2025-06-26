@@ -31,7 +31,14 @@ class Program {
         Console.WriteLine($"Final result: f({minimum[0]:F6}, {minimum[1]:F6}) = {f(minimum):F6}");
 
         File.WriteAllText(bestFile, $"{bestSample[0]} {bestSample[1]}\n");
-        File.WriteAllText(finalFile, $"{minimum[0]} {minimum[1]}\n");
+
+        if (name == "himmelblau") {
+            double result = f(minimum);
+            File.WriteAllText("final_himmelblau.txt",
+                $"{minimum[0]} {minimum[1]} {result}");
+        } else {
+            File.WriteAllText(finalFile, $"{minimum[0]} {minimum[1]}\n");
+        }
 
         if (name == "himmelblau") GenerateSurfaceFile(f, a, b, "himmelblau_surface.txt", 100);
     }
