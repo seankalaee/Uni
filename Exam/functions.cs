@@ -18,3 +18,17 @@ public class rosenbrock : function {
         return Pow(1 - x0, 2) + 100 * Pow(x1 - x0 * x0, 2);
     }
 }
+
+public class beale : function {
+    public override double invoke(vector x) {
+        double x0 = x[0], x1 = x[1];
+        return Pow(1.5 - x0 + x0 * x1, 2) + Pow(2.25 - x0 + x0 * x1 * x1, 2) + Pow(2.625 - x0 + x0 * x1 * x1 * x1, 2);
+    }
+}
+
+public class booth : function {
+    public override double invoke(vector x) {
+        double x0 = x[0], x1 = x[1];
+        return Pow(x0 + 2 * x1 - 7, 2) + Pow(2 * x0 + x1 - 5, 2);
+    }
+}
