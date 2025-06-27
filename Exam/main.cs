@@ -114,7 +114,7 @@ class Program {
 
         resultsWriter.Close();
 
-        Console.WriteLine("\n✅ All tasks complete.");
+        Console.WriteLine("\n All tasks complete.");
         Console.WriteLine("Generating plots...");
 
         foreach (var gpfile in new[] { "plotH.gp", "plotR.gp", "plotB.gp", "plotBooth.gp" }) {
